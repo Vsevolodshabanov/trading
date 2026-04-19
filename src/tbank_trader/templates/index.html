@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ app_name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="masthead">
+        <div class="masthead-copy">
+          <div class="masthead-kicker">
+            <span class="logo-mark">SPX</span>
+            <span class="kicker-pill" id="environment-badge">Песочница</span>
+            <span class="kicker-pill neutral">Версия MVP 1.0</span>
+          </div>
+          <h1>SPX Momentum RUS</h1>
+          <p class="subtitle">
+            Единый дашборд стратегии: текущий портфель, live-метрики, сигналы и фильтры,
+            историческая симуляция и журнал событий. Обновление каждые
+            {{ refresh_seconds }} секунд.
+          </p>
+          <div class="hero-summary" id="hero-summary"></div>
+        </div>
+        <div class="masthead-actions">
+          <div class="updated-card">
+            <span class="updated-label">Обновлено</span>
+            <strong id="updated-at">—</strong>
+          </div>
+          <div class="action-stack">
+            <button id="pause-btn" class="danger">Принудительный стоп</button>
+            <button id="resume-btn" class="secondary">Возобновить</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-grid dashboard-grid-top">
+        <article class="panel" id="portfolio-block">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Блок 1</p>
+              <h2>Текущий портфель</h2>
+            </div>
+            <span class="panel-badge">Live T-Invest Sandbox</span>
+          </div>
+          <div id="current-portfolio"></div>
+        </article>
+
+        <article class="panel" id="metrics-block">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Блок 2</p>
+              <h2>Ключевые метрики</h2>
+            </div>
+            <span class="panel-badge">Live Snapshot</span>
+          </div>
+          <div id="live-metrics"></div>
+        </article>
+      </section>
+
+      <section class="dashboard-grid dashboard-grid-middle">
+        <article class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Блок 3</p>
+              <h2>Сигналы и фильтры</h2>
+            </div>
+            <span class="panel-badge">Что думает система</span>
+          </div>
+          <div id="signals-filters"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Блок 4</p>
+              <h2>Эквити-кривая</h2>
+            </div>
+            <span class="panel-badge">История + live</span>
+          </div>
+          <div id="equity-curve"></div>
+        </article>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="panel panel-wide">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Блок 5</p>
+              <h2>Результаты бэктестов</h2>
+            </div>
+            <span class="panel-badge">Сравнение конфигураций</span>
+          </div>
+          <div id="backtests"></div>
+        </article>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="panel panel-wide">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Блок 6</p>
+              <h2>Лента событий</h2>
+            </div>
+            <span class="panel-badge">Последние сделки, ошибки, ребалансировки</span>
+          </div>
+          <div id="event-feed"></div>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      window.dashboardRefreshSeconds = {{ refresh_seconds }};
+      window.brokerStatusRefreshSeconds = {{ broker_status_refresh_seconds }};
+      window.appName = {{ app_name | tojson }};
+    </script>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

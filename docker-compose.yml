@@ -1,0 +1,65 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: trader
+      POSTGRES_USER: trader
+      POSTGRES_PASSWORD: trader
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trader -d trader"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build: .
+    env_file:
+      - .env
+    environment:
+      TBANK_TRADER_DATABASE_URL: postgresql+psycopg://trader:trader@db:5432/trader
+      TBANK_TRADER_REDIS_URL: redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "${TBANK_TRADER_PUBLIC_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  engine:
+    build: .
+    command: ["python", "-m", "tbank_trader.engine.runner"]
+    env_file:
+      - .env
+    environment:
+      TBANK_TRADER_DATABASE_URL: postgresql+psycopg://trader:trader@db:5432/trader
+      TBANK_TRADER_REDIS_URL: redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  test:
+    build: .
+    command: ["pytest", "-q"]
+    environment:
+      TBANK_TRADER_DATABASE_URL: sqlite:////tmp/tbank-trader-test.db
+      TBANK_TRADER_REDIS_URL: ""
+      TBANK_TRADER_BROKER_MODE: simulated
+      TBANK_TRADER_SYMBOLS: SBER,GAZP

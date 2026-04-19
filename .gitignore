@@ -1,0 +1,12 @@
+__pycache__/
+.pytest_cache/
+.venv/
+.env
+*.pyc
+db_data/
+.DS_Store
+data_exports/
+*.sqlite
+*.db
+*.parquet
+.ipynb_checkpoints/
